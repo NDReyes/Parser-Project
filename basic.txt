@@ -1,0 +1,4 @@
+class helloWorld
+{
+  bool hello = 4;
+}

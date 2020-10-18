@@ -1,0 +1,169 @@
+
+/* Author: Nestor Reyes ndr170001
+ * Date: 9/16/2020
+ * Purpose: Includes all the terminals necessary to create a lexical analysis.
+ */
+
+import java_cup.runtime.*;
+
+terminal INT;
+terminal CHAR;
+terminal BOOL;
+terminal FLOAT;
+
+terminal float FLOATLIT;
+terminal char CHARLIT;
+terminal String STRLIT;
+terminal TRUE;
+terminal FALSE;
+
+/* Loop, function, and class related */
+terminal READ;
+terminal PRINT;
+terminal PRINTLINE;
+terminal CLASS;
+terminal ELSE;
+terminal IF;
+terminal WHILE;
+terminal RETURN;
+terminal VOID;
+
+/* Math related */
+terminal MULT;
+terminal DIVIDE;
+terminal ADD;
+terminal SUBTRACT;
+terminal LESSTHAN;
+terminal GREATERTHAN;
+terminal LESSTHANEQ;
+terminal GREATERTHANEQ;
+terminal EQ;
+terminal NOTEQ;
+terminal BACKSLASH;
+terminal OR;
+terminal AND;
+terminal ASSMNT;
+terminal INCREMENT; // ++
+terminal DECREMENT; // --
+
+/* Misc symbols */
+
+terminal OPENPARAN; //open parenthesis
+terminal CLOSEDPARAN; //closed parenthesis
+terminal OPENBRACK; //open bracket
+terminal CLOSEDBRACK; //closed bracket
+terminal OPENCURLY;
+terminal CLOSEDCURLY;
+terminal COLON;       //semi-colon
+
+terminal COMMA;
+terminal QUEST;
+terminal TILDE;
+terminal SEMICOLON;
+
+terminal String VAR;
+terminal String ID;
+terminal int INTLIT;
+terminal FINAL;
+
+non terminal Program program;
+non terminal Memberdecls memberdecls;
+non terminal Fielddecls fielddecls;
+non terminal Methoddecls methoddecls;
+non terminal Fielddecl fielddecl;
+
+non terminal Optionalfinal optionalfinal;
+non terminal Optionalexpr optionalexpr;
+non terminal methoddecl methoddecl;
+non terminal Optionalsemi optionalsemi;
+non terminal Returntype returntype;
+non terminal Type type;
+non terminal Argdecls argdecls;
+non terminal ArgdeclList argdecllist;
+non terminal Argdecl argdecl;
+non terminal Stmts stmts;
+non terminal Stmt stmt;
+
+non terminal IfEnd ifend;
+non terminal Name name;
+non terminal Args arg;
+non terminal Readlist readlist;
+non terminal Printlist printlist;
+non terminal PrintLineList printlinelist;
+non terminal Expr expr;
+non terminal Binaryop binaryop;
+
+precedence left LESSTHAN, GREATERTHAN, LESSTHANEQ, GREATERTHANEQ, EQ, NOTEQ, OR, AND;
+precedence left ADD, SUBTRACT;
+precedence left MULT, DIVIDE;
+
+
+// Java file done.
+program ::= CLASS ID:i OPENCURLY memberdecls:m CLOSEDCURLY {:RESULT = new Program(i, m);:}
+            ;
+
+// Incomplete. Started
+//memberdecls ::= fielddecls methoddecls {};
+memberdecls ::= fielddecls:f {:RESULT = new Memberdecls(f);:}
+                ;
+
+// Java file done.
+fielddecls ::= fielddecl:a fielddecls:b {:RESULT = new Fielddecls(a,b);:} | {:RESULT = new Fielddecls();:}
+               ;
+
+// Java file done.
+fielddecl ::= optionalfinal:f type:t ID:i optionalexpr:e SEMICOLON {:RESULT = new Fielddecl(f, t, i, e);:} //|
+              //type:t ID:i OPENBRACK INTLIT:input CLOSEDBRACK SEMICOLON {:RESULT = new Fielddecl(t,i,input);:}
+              ;
+
+// Java file done
+optionalfinal ::= FINAL {:RESULT = new Optionalfinal("final");:} |
+                  {:RESULT = new Optionalfinal("");:}
+                  ;
+
+//Java file done
+optionalexpr ::= ASSMNT expr:e {:RESULT = new Optionalexpr(e);:} |
+                 {:RESULT = new Optionalexpr();:}
+                 ;
+
+//Java file done
+type ::= INT{:RESULT = new Type("int");:} |
+         CHAR{:RESULT = new Type("char");:} |
+         BOOL{:RESULT = new Type("bool");:} |
+         FLOAT{:RESULT = new Type("float");:}
+         ;
+
+//Java file done
+name ::= ID:i{:RESULT = new Name(i);:} |
+         ID:i OPENBRACK expr:e CLOSEDBRACK {:RESULT = new Name(i,e);:};
+
+// Incomplete. Only terminals and recursives
+// Java file started
+expr ::= name:n {:RESULT = new Expr(n);:} |
+         ID:i OPENPARAN CLOSEDPARAN {:RESULT = new Expr(i);:} |
+         INTLIT:a {:RESULT = new Expr(a);:} |
+         CHARLIT:b {:RESULT = new Expr(b);:} |
+         STRLIT:c {:RESULT = new Expr(c);:} |
+         FLOATLIT:d {:RESULT = new Expr(d);:} |
+         TRUE{:RESULT = new Expr("true");:} |
+         FALSE{:RESULT = new Expr("false");:} |
+         expr:lhs binaryop:bin expr:rhs {:RESULT = new Expr(lhs, bin, rhs);:}
+         ;
+
+//methoddecls ::= {:RESULT = New Methoddecls{""};:};
+
+
+// Java file done
+binaryop ::= MULT{: RESULT = new Binaryop("*"); :} |
+             DIVIDE{: RESULT = new Binaryop("/"); :} |
+             ADD{: RESULT = new Binaryop("+"); :} |
+             SUBTRACT{: RESULT = new Binaryop("-"); :} |
+             LESSTHAN{: RESULT = new Binaryop("<"); :} |
+             GREATERTHAN{: RESULT = new Binaryop(">"); :} |
+             LESSTHANEQ{: RESULT = new Binaryop("<="); :} |
+             GREATERTHANEQ{: RESULT = new Binaryop(">="); :} |
+             EQ{: RESULT = new Binaryop("=="); :} |
+             NOTEQ{: RESULT = new Binaryop("<>"); :} |
+             OR{: RESULT = new Binaryop("||"); :} |
+             AND{: RESULT = new Binaryop("&&"); :}
+             ;

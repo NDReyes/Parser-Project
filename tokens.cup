@@ -86,12 +86,16 @@ non terminal Stmt stmt;
 
 non terminal IfEnd ifend;
 non terminal Name name;
-non terminal Args arg;
+non terminal Args args;
 non terminal Readlist readlist;
 non terminal Printlist printlist;
-non terminal PrintLineList printlinelist;
+non terminal Printlinelist printlinelist;
 non terminal Expr expr;
 non terminal Binaryop binaryop;
+
+// Extras
+non terminal Optionalargs optionalargs;
+non terminal Unaryexpr unaryexpr;
 
 precedence left LESSTHAN, GREATERTHAN, LESSTHANEQ, GREATERTHANEQ, EQ, NOTEQ, OR, AND;
 precedence left ADD, SUBTRACT;
@@ -137,17 +141,34 @@ type ::= INT{:RESULT = new Type("int");:} |
 name ::= ID:i{:RESULT = new Name(i);:} |
          ID:i OPENBRACK expr:e CLOSEDBRACK {:RESULT = new Name(i,e);:};
 
+//Java file done
+args ::= expr:e COMMA args:a {:RESULT = new Args(e, a);:} |
+         expr:e{:RESULT = new Args(e);:};
+
+//Java file done
+readlist ::= name:n COMMA readlist:r {:RESULT = new Readlist(n, r);:} |
+             name:n {:RESULT = new Readlist(n);:};
+
+
+printlist ::= expr:e COMMA printlist:p {:RESULT = new Printlist(e, p);:} |
+              expr:e{:RESULT = new Printlist(e);:};
+
+printlinelist ::= printlist:p {:RESULT = new Printlinelist(p);:} |
+                  {:RESULT = new Printlinelist();:};
+
 // Incomplete. Only terminals and recursives
 // Java file started
 expr ::= name:n {:RESULT = new Expr(n);:} |
-         ID:i OPENPARAN CLOSEDPARAN {:RESULT = new Expr(i);:} |
+         ID:i OPENPARAN optionalargs:a CLOSEDPARAN {:RESULT = new Expr(i, a);:} |
          INTLIT:a {:RESULT = new Expr(a);:} |
          CHARLIT:b {:RESULT = new Expr(b);:} |
          STRLIT:c {:RESULT = new Expr(c);:} |
          FLOATLIT:d {:RESULT = new Expr(d);:} |
          TRUE{:RESULT = new Expr("true");:} |
          FALSE{:RESULT = new Expr("false");:} |
-         expr:lhs binaryop:bin expr:rhs {:RESULT = new Expr(lhs, bin, rhs);:}
+         expr:lhs binaryop:bin expr:rhs {:RESULT = new Expr(lhs, bin, rhs);:} |
+         OPENPARAN expr:exprInput CLOSEDPARAN {:RESULT = new Expr(exprInput);:} |
+         unaryexpr:unExpr {:RESULT = new Expr(unExpr);:}
          ;
 
 //methoddecls ::= {:RESULT = New Methoddecls{""};:};
@@ -167,3 +188,13 @@ binaryop ::= MULT{: RESULT = new Binaryop("*"); :} |
              OR{: RESULT = new Binaryop("||"); :} |
              AND{: RESULT = new Binaryop("&&"); :}
              ;
+
+//Extras;helpers
+//Java file done
+optionalargs ::= args:a{:RESULT = new Optionalargs(a);:} |
+                 {:RESULT = new Optionalargs();:};
+
+//Java file done
+unaryexpr ::= TILDE expr:e{:RESULT = new Unaryexpr("~", e);:} |
+              SUBTRACT expr:e {:RESULT = new Unaryexpr("-", e);:} |
+              ADD expr:e {:RESULT = new Unaryexpr("+", e);:};

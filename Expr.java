@@ -4,10 +4,14 @@ class Expr implements Token
   Name exprName;
   Binaryop op;
   String input;
+  String idi;
   int intlit;
   char charlit;
   boolean boollit;
   float floatlit;
+  Optionalargs args;
+  Unaryexpr unExpr;
+  Expr nextExpr;
   int state;
 
   public Expr(int a)
@@ -55,6 +59,28 @@ class Expr implements Token
     state = 6;
   }
 
+  //If arguments contain an ID and an optional argument.
+  public Expr(String idInput, Optionalargs argsInput)
+  {
+    idi = idInput;
+    args = argsInput;
+    state = 7;
+  }
+
+  //If arguments contain a unary expression.
+  public Expr(Unaryexpr unInput)
+  {
+    unExpr = unInput;
+    state = 8;
+  }
+
+  //If arguments contain (expression)
+  public Expr(Expr inputExpr)
+  {
+    nextExpr = inputExpr;
+    state = 9;
+  }
+
   public String toString(int t)
   {
     if (state == 0)
@@ -73,9 +99,15 @@ class Expr implements Token
       return input;
 
     else if (state == 5)
-      return lhs.toString(t) + op.toString(t) + rhs.toString(t);
-    else
+      return "(" + lhs.toString(t) + op.toString(t) + rhs.toString(t) + ")";
+    else if (state == 6)
       return exprName.toString(t);
+    else if (state == 7)
+      return idi + "(" + args.toString(t) + ")";
+    else if (state == 8)
+      return "(" + unExpr.toString(t) + ")";
+    else
+      return "(" + nextExpr.toString(t) + ")";
   }
 
 

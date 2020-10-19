@@ -6,6 +6,9 @@ public class Fielddecl implements Token
   String idi;
   Optionalexpr opexpr;
   int intlit;
+  Arraydecl arraydecl;
+  Fielddecla fielddecla;
+  Fielddeclb fielddeclb;
   int state;
 
   public Fielddecl(Optionalfinal f, Type inputtype, String i, Optionalexpr e)
@@ -17,12 +20,25 @@ public class Fielddecl implements Token
     state = 0;
   }
 
-  public Fielddecl(Type inputtype, String i, int intput)
+  public Fielddecl(Arraydecl inputDecl)
   {
-    idtype = inputtype;
-    idi = i;
-    intlit = intput;
+    arraydecl = inputDecl;
     state = 1;
+  }
+
+  public Fielddecl(Fielddecla input)
+  {
+    fielddecla = input;
+    state = 2;
+  }
+  public Fielddecl(Fielddeclb input)
+  {
+    fielddeclb = input;
+    state = 3;
+  }
+  public Fielddecl()
+  {
+    state = 4;
   }
   public String toString(int t)
   {
@@ -31,8 +47,14 @@ public class Fielddecl implements Token
       return "\n" + opfinal.toString(t) + " " +
              idtype.toString(t) + " " + idi + " " + opexpr.toString(t) + ";\n" ;
     }
+    else if(state == 1)
+      return arraydecl.toString(t);
+    else if (state == 2)
+      return fielddecla.toString(t);
+    else if (state == 3)
+      return fielddeclb.toString(t);
     else
-      return "\n" + idtype.toString(t) + " " + idi + " [ " + intlit + " ];\n";
+      return "";
   }
 
 

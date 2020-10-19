@@ -1,1 +1,6 @@
-class onlyMethods {  }
+class onlyMethods {
+	void hello (  ) 
+	{  
+	};
+ 
+}

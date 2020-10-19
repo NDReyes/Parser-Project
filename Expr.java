@@ -1,6 +1,7 @@
 class Expr implements Token
 {
   Expr lhs, rhs;
+  Expr nextExpr;
   Name exprName;
   Binaryop op;
   String input;
@@ -11,7 +12,7 @@ class Expr implements Token
   float floatlit;
   Optionalargs args;
   Unaryexpr unExpr;
-  Expr nextExpr;
+  Type type;
   int state;
 
   public Expr(int a)
@@ -81,6 +82,23 @@ class Expr implements Token
     state = 9;
   }
 
+  // (Type) Expr
+  public Expr(Type t, Expr e)
+  {
+    type = t;
+    nextExpr = e;
+    state = 10;
+  }
+
+  // ( Expr ? Expr : Expr )
+  public Expr(Expr one, Expr two, Expr three)
+  {
+    lhs = one;
+    nextExpr = two;
+    rhs = three;
+    state = 11;
+  }
+
   public String toString(int t)
   {
     if (state == 0)
@@ -99,15 +117,20 @@ class Expr implements Token
       return input;
 
     else if (state == 5)
-      return "(" + lhs.toString(t) + op.toString(t) + rhs.toString(t) + ")";
+      return "( " + lhs.toString(t) + op.toString(t) + rhs.toString(t) + " )";
     else if (state == 6)
       return exprName.toString(t);
     else if (state == 7)
-      return idi + "(" + args.toString(t) + ")";
+      return idi + "( " + args.toString(t) + " )";
     else if (state == 8)
-      return "(" + unExpr.toString(t) + ")";
+      return "( " + unExpr.toString(t) + " )";
+    else if (state == 9)
+      return "( " + nextExpr.toString(t) + " )";
+    else if (state == 10)
+      return "( " + type.toString(t) + " ) " + nextExpr;
     else
-      return "(" + nextExpr.toString(t) + ")";
+      return "( " + lhs.toString(t) + " ? " + nextExpr.toString(t) + " : " +
+             rhs.toString(t) + " )" ;
   }
 
 

@@ -25,6 +25,7 @@ public interface sym {
   public static final int COMMA = 43;
   public static final int BOOL = 4;
   public static final int CLASS = 14;
+  public static final int FI = 51;
   public static final int IF = 16;
   public static final int ID = 48;
   public static final int EOF = 0;
@@ -108,7 +109,8 @@ public interface sym {
   "VAR",
   "ID",
   "INTLIT",
-  "FINAL"
+  "FINAL",
+  "FI"
   };
 }
 

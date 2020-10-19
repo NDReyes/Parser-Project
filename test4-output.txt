@@ -1,3 +1,4 @@
-class onlyFields { 
- int x ;
- }
+class onlyFields {
+	int x ;
+ 
+}

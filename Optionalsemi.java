@@ -1,26 +1,23 @@
-class Optionalsemi
+public class Optionalsemi implements Token
 {
-  boolean exists;
+  String semi;
 
   public Optionalsemi(String item)
   {
-    if (item == "")
-      exists = false;
-    else if (item == ";")
-      exists = true;
+    if (item == ";")
+      semi = ";";
+    else
+      semi = "";
   }
 
   public Optionalsemi()
   {
-    exists = false;
+    semi = "";
   }
 
   public String toString(int t)
   {
-    if(!exists)
-      return "";
-    else
-      return ";";
+    return semi;
   }
 
 

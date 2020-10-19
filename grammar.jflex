@@ -96,6 +96,7 @@ blockcomment = "\\*"[^*]~"*\\" | "\\*"\**"*\\"
 "class"           { return getSymbol(sym.CLASS, "class");}
 "else"            { return getSymbol(sym.ELSE, "else");}
 "if"              { return getSymbol(sym.IF, "if");}
+"fi"              { return getSymbol(sym.FI, "fi");}
 "while"           { return getSymbol(sym.WHILE, "while");}
 "return"          { return getSymbol(sym.RETURN, "return");}
 "read"            { return getSymbol(sym.READ, "read");}

@@ -21,7 +21,7 @@ FILE=		Lexer.java      parser.java    sym.java \
 
 dump: parserD.java $(FILE:java=class)
 
-run: basic.txt test3.as test4.as
+run: basic.txt test3.as test4.as test5.as
 
 basic.txt: all
 		$(JAVA) -cp $(CP) parserTest basic.txt > basic-output.txt
@@ -34,6 +34,10 @@ test3.as: all
 test4.as: all
 		$(JAVA) -cp $(CP) parserTest test4.as > test4-output.txt
 		cat -n test4-output.txt
+
+test5.as: all
+		$(JAVA) -cp $(CP) parserTest test5.as > test5-output.txt
+		cat -n test5-output.txt
 
 all: Lexer.java parser.java $(FILE:java=class)
 

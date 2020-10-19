@@ -10,6 +10,6 @@ class Program implements Token
 
   public String toString(int t)
   {
-    return "class " + idi + " { " + mem.toString(t) + " }\n";
+    return "class " + idi + " {\n\t" + mem.toString(t) + " \n}\n";
   }
 }

@@ -2,24 +2,31 @@ public class Fielddecls implements Token
 {
   Fielddecl decl;
   Fielddecls decls;
-  boolean empty;
+  int state;
 
   public Fielddecls(Fielddecl a, Fielddecls b)
   {
     decl = a;
     decls = b;
-    empty = false;
+    state = 0;
   }
 
   public Fielddecls()
   {
-    empty = true;
+    state = 1;
   }
 
+  public Fielddecls(Fielddecl input)
+  {
+    decl = input;
+    state = 3;
+  }
   public String toString(int t)
   {
-    if(!empty)
+    if(state == 0)
       return decl.toString(t) + decls.toString(t);
+    else if ( state == 3)
+      return decl.toString(t);
     else
       return "";
 

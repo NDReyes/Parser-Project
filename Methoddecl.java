@@ -1,47 +1,51 @@
 public class Methoddecl implements Token
 {
-  Returntype returnty;
-  Type type;
+  Fieldandmethod fieldandmethod;
   String id;
   Argdecls argdecls;
   Fielddecls fielddecls;
   Stmts stmts;
   Optionalsemi semi;
+  String voidString;
   int state;
-  public Methoddecl(Returntype r, String i, Argdecls args, Fielddecls field, Stmts s, Optionalsemi semiinput)
+
+  public Methoddecl(Fieldandmethod inputfm, Argdecls args, Fielddecls inputDecls, Stmts s, Optionalsemi semiinput)
   {
-    returnty = r;
-    id = i;
+    fieldandmethod = inputfm;
     argdecls = args;
-    fielddecls = field;
+    fielddecls = inputDecls;
     stmts = s;
     semi = semiinput;
     state = 0;
   }
 
-  public Methoddecl(Type r, String i, Argdecls args, Fielddecls field, Stmts s, Optionalsemi semiinput)
+  public Methoddecl(String inpVoid, String inpId, Argdecls argInp, Fielddecls inputDecls, Stmts s, Optionalsemi inpsemi)
   {
-    type = r;
-    id = i;
-    argdecls = args;
-    fielddecls = field;
+    voidString = inpVoid;
+    id = inpId;
+    argdecls = argInp;
+    fielddecls = inputDecls;
     stmts = s;
-    semi = semiinput;
+    semi = inpsemi;
     state = 1;
   }
+
+
   public String toString(int t)
   {
     if (state == 0)
     {
-      return returnty.toString(t) + " " + id + " ( " +
-           argdecls.toString(t) + " ) \n\t{ " +
-           fielddecls.toString(t) + stmts.toString(t) + " \n\t}"
-            + semi.toString(t) + "\n";
+      return fieldandmethod.toString(t) + " ( " +
+       argdecls.toString(t) + " ) \n\t{ " + fielddecls.toString(t) +
+       stmts.toString(t) + " \n\t}"
+        + semi.toString(t) + "\n";
     }
     else
-    return type.toString(t) + " " + id + " ( " +
-         argdecls.toString(t) + " ) \n\t{ " +
-         fielddecls.toString(t) + stmts.toString(t) + " \n\t}"
+    {
+        return "void" + " " + id + " ( " +
+         argdecls.toString(t) + " ) \n\t{ " + fielddecls.toString(t) +
+         stmts.toString(t) + " \n\t}"
           + semi.toString(t) + "\n";
+    }
   }
 }

@@ -100,71 +100,75 @@ non terminal Unaryexpr unaryexpr;
 non terminal Arraydecl arraydecl;
 non terminal Fielddecla fielddecla;
 non terminal Fielddeclb fielddeclb;
+non terminal Fielddeclc fielddeclc;
+non terminal Fieldandmethod fieldandmethod;
+non terminal Incordec incordec;
 non terminal comments;
 
-precedence left BOOL, CHAR, FLOAT, INT;
+//precedence left BOOL, FLOAT, INT, CHAR;
+
 precedence left LESSTHAN, GREATERTHAN, LESSTHANEQ, GREATERTHANEQ, EQ, NOTEQ, OR, AND;
 precedence left ADD, SUBTRACT;
 precedence left MULT, DIVIDE;
-
+precedence left OPENPARAN, CLOSEDPARAN;
 
 
 // Java file done.
 program ::= CLASS ID:i OPENCURLY memberdecls:m CLOSEDCURLY {:RESULT = new Program(i, m);:}
             ;
 
-// Incomplete. Started
-memberdecls ::= fielddecls:f methoddecls:m {:RESULT = new Memberdecls(f, m);:}
-//memberdecls ::= fielddecls:f {:RESULT = new Memberdecls(f);:}
-                ;
+memberdecls ::= fielddecls:f methoddecls:m{:RESULT = new Memberdecls(f,m);:}|
+                methoddecls:m{:RESULT = new Memberdecls(m);:};
 
-// Java file done.
-fielddecls ::= fielddecl:a fielddecls:b {:RESULT = new Fielddecls(a,b);:} |
-               //fielddecl:a {:RESULT = new Fielddecls(a);:} |
-               {:RESULT = new Fielddecls();:}
-               ;
+fielddecls ::= fielddecls:decls fielddecl:decl{:RESULT = new Fielddecls(decl, decls);:}|
+               fielddecl:f{:RESULT = new Fielddecls(f);:};
+               //{:RESULT = new Fielddecls();:};
 
 //Java file done
 methoddecls ::= methoddecl:a methoddecls:b {:RESULT = new Methoddecls(a,b);:} |
-                {:RESULT = new Methoddecls();:}
-                ;
-// Incomplete
-fielddecl ::= //optionalfinal:f type:t ID:i optionalexpr:e SEMICOLON {:RESULT = new Fielddecl(f,t,i,e);:}
-
-              fielddecla:a {:RESULT = new Fielddecl(a);:} |
-              fielddeclb:b {:RESULT = new Fielddecl(b);:} |
-              //{:RESULT = new Fielddecl();:}
-              arraydecl:a{:RESULT = new Fielddecl(a);:}
-              ;
-fielddecla ::= FINAL fielddeclb:field {:RESULT = new Fielddecla("final", field);:}
+               {:RESULT = new Methoddecls();:}
                ;
 
-fielddeclb ::= type:t ID:i optionalexpr:e SEMICOLON {:RESULT = new Fielddeclb(t, i, e);:};
+fieldandmethod ::= type:t ID:i {:RESULT = new Fieldandmethod(t, i);:};
 
-// Java file done
-optionalfinal ::= FINAL {:RESULT = new Optionalfinal("final");:} |
-                  {:RESULT = new Optionalfinal("");:}
-                  ;
+fielddecl ::= FINAL fieldandmethod:fieldm optionalexpr:e SEMICOLON{:RESULT = new Fielddecl("final", fieldm, e);:}|
+              fieldandmethod:fieldm optionalexpr:e SEMICOLON{:RESULT = new Fielddecl("", fieldm, e);:}|
+              fieldandmethod:fieldm OPENBRACK INTLIT:i CLOSEDBRACK SEMICOLON{:RESULT = new Fielddecl(fieldm, i);:};
 
 //Java file done
 optionalexpr ::= ASSMNT expr:e {:RESULT = new Optionalexpr(e);:} |
                  {:RESULT = new Optionalexpr();:}
                  ;
 
-//Java file done
-methoddecl ::= returntype:r ID:i OPENPARAN argdecls:args CLOSEDPARAN
-               OPENCURLY fielddecls:field stmts:s CLOSEDCURLY
+methoddecl ::= fieldandmethod:fieldm OPENPARAN argdecls:args CLOSEDPARAN
+               OPENCURLY fielddecls:decls stmts:s CLOSEDCURLY
                optionalsemi:semi
-               {:RESULT = new Methoddecl(r,i,args,field,s,semi);:};
+               {:RESULT = new Methoddecl(fieldm, args, decls, s, semi);:}|
+
+               VOID ID:i OPENPARAN argdecls:args CLOSEDPARAN
+               OPENCURLY fielddecls:decls stmts:s CLOSEDCURLY
+               optionalsemi:semi
+               {:RESULT = new Methoddecl("void", i, args, decls, s, semi);:}|
+
+               fieldandmethod:fieldm OPENPARAN argdecls:args CLOSEDPARAN
+               OPENCURLY stmts:s CLOSEDCURLY
+               optionalsemi:semi
+               {}|
+
+               VOID ID:i OPENPARAN argdecls:args CLOSEDPARAN
+               OPENCURLY stmts:s CLOSEDCURLY
+               optionalsemi:semi
+               {}
+
+
+               ;
+
 
 //Java file done
 optionalsemi ::= SEMICOLON {:RESULT = new Optionalsemi(";");:} |
                  {:RESULT = new Optionalsemi();:}
                  ;
 
-//Java file done
-returntype ::= type:t{:RESULT = new Returntype(t);:}|
-               VOID {:RESULT = new Returntype("void");:};
 
 //Java file done
 type ::= INT{:RESULT = new Type("int");:} |
@@ -182,13 +186,14 @@ argdecllist ::= argdecl:a COMMA argdecllist:l {:RESULT = new Argdecllist(a, l);:
                 argdecl:a{:RESULT = new Argdecllist(a);:};
 
 //Java file done
-argdecl ::= type:t ID:i {:RESULT = new Argdecl(t, i, 0);:} |
-            type:t ID:i OPENBRACK CLOSEDBRACK {:RESULT = new Argdecl(t,i, 1);:};
+argdecl ::= fieldandmethod:f {:RESULT = new Argdecl(f, 0);:} |
+            fieldandmethod:f OPENBRACK CLOSEDBRACK {:RESULT = new Argdecl(f, 1);:};
 
 //Java file done
 stmts ::= stmt:st stmts:sts {:RESULT = new Stmts(st,sts);:}|
           {:RESULT = new Stmts();:};
 
+//Java file done
 stmt ::= IF OPENPARAN expr:e CLOSEDPARAN stmt:s ifend:ie{:RESULT = new Stmt(e,s,ie);:}|
          WHILE OPENPARAN expr:e CLOSEDPARAN stmt:s{:RESULT = new Stmt(e,s);:}|
          name:n ASSMNT expr:e SEMICOLON {:RESULT = new Stmt(n,e);:}|
@@ -199,10 +204,16 @@ stmt ::= IF OPENPARAN expr:e CLOSEDPARAN stmt:s ifend:ie{:RESULT = new Stmt(e,s,
          ID:i OPENPARAN args:a CLOSEDPARAN SEMICOLON {:RESULT = new Stmt(i, a);:}|
          RETURN SEMICOLON{:RESULT = new Stmt("return", ";");:}|
          RETURN expr:e SEMICOLON{:RESULT = new Stmt("return", e);:}|
-         name:n INCREMENT SEMICOLON {:RESULT = new Stmt(n, "++");:} |
-         name:n DECREMENT SEMICOLON {:RESULT = new Stmt(n, "--");:} |
-         OPENCURLY fielddecls:f stmts:st CLOSEDCURLY optionalsemi:semi {:RESULT = new Stmt(f,st,semi);:}
+         name:n incordec:i SEMICOLON {:RESULT = new Stmt(i, n);:}|
+         OPENCURLY fielddecls:f stmts:st CLOSEDCURLY optionalsemi:semi {:RESULT = new Stmt(f,st,semi);:} |
+         OPENCURLY stmts:stss CLOSEDCURLY optionalsemi:seminput {:RESULT = new Stmt(stss,seminput);:}
+         //OPENCURLY CLOSEDCURLY {:RESULT = new Stmt();:}
          ;
+
+//Java file done
+incordec ::= INCREMENT {:RESULT = new Incordec("++");:} |
+             DECREMENT {:RESULT = new Incordec("--");:};
+
 
 ifend ::= ELSE stmt:s FI{:RESULT = new Ifend(s);:} |
           FI{:RESULT = new Ifend();:};
@@ -268,6 +279,3 @@ optionalargs ::= args:a{:RESULT = new Optionalargs(a);:} |
 unaryexpr ::= TILDE expr:e{:RESULT = new Unaryexpr("~", e);:} |
               SUBTRACT expr:e {:RESULT = new Unaryexpr("-", e);:} |
               ADD expr:e {:RESULT = new Unaryexpr("+", e);:};
-
-arraydecl ::= type:t ID:i OPENBRACK INTLIT:input CLOSEDBRACK SEMICOLON {:RESULT = new Arraydecl(t,i,input);:}
-              ;

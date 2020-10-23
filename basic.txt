@@ -1,8 +1,11 @@
-
-class onlyMethods
+class testClass
 {
-  void hello()
-  {
+	int testInt;
+	bool testBool;
+	char testChar;
+	float testFloat;
+	void testNestedIfs()
+	{
 
-  };
+	}
 }

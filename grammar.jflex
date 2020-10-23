@@ -87,7 +87,7 @@ blockcomment = "\\*"[^*]~"*\\" | "\\*"\**"*\\"
 "=="              { return getSymbol(sym.EQ, "==");}
 "<>"              { return getSymbol(sym.NOTEQ, "<>");}
 "\\"               { return getSymbol(sym.BACKSLASH, "\\");}
-"|"               { return getSymbol(sym.OR, "|");}
+"||"               { return getSymbol(sym.OR, "|");}
 "&&"              { return getSymbol(sym.AND, "&&");}
 "true"            { return getSymbol(sym.TRUE, "true");}
 "false"           { return getSymbol(sym.FALSE, "false");}

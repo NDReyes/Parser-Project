@@ -1,6 +1,7 @@
 public class Stmt
 {
   Name name;
+  Incordec incordec;
   String unary;
   Readlist readlist;
   Printlist printlist;
@@ -97,12 +98,29 @@ public class Stmt
     state = 10;
   }
 
+
+  //If statement
   public Stmt(Expr e, Stmt s, Ifend ie)
   {
     expr = e;
     stmt = s;
     ifend = ie;
     state = 11;
+  }
+
+  //{ Stmts } Optionalsemi
+  public Stmt(Stmts inputStmts, Optionalsemi semi)
+  {
+    stmts = inputStmts;
+    optionalsemi = semi;
+    state = 12;
+  }
+
+  public Stmt(Incordec input, Name n)
+  {
+    name = n;
+    incordec = input;
+    state = 13;
   }
 
   public String toString(int t)
@@ -130,8 +148,12 @@ public class Stmt
              optionalsemi.toString(t);
     else if (state == 10)
       return "\n while ( " + expr.toString(t) + " ) " + stmt.toString(t);
+    else if (state == 11)
+      return "\n if( " + expr.toString(t) + " ) " + stmt.toString(t) + ifend.toString(t);
+    else if (state == 12)
+      return "\n { " +  stmts.toString(t) + " }" + optionalsemi.toString(t);
     else
-      return "\n if( " + expr.toString(t) + " ) " + stmts.toString(t) + ifend.toString(t);
+      return "\n " + name.toString(t) + incordec.toString(t) + ";";
   }
 
 

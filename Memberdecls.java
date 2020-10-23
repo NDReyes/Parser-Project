@@ -8,6 +8,11 @@ class Memberdecls implements Token
     field = input;
     state = 0;
   }
+  public Memberdecls(Methoddecls inputMethod)
+  {
+    methoddecls = inputMethod;
+    state = 2;
+  }
   public Memberdecls(Fielddecls inputField, Methoddecls inputMethod)
   {
     field = inputField;
@@ -18,8 +23,10 @@ class Memberdecls implements Token
   {
     if(state == 1 )
       return field.toString(t) + methoddecls.toString(t);
-    else
+    else if (state == 0)
       return field.toString(t);
+    else
+      return methoddecls.toString(t);
   }
 
 }

@@ -1,6 +1,0 @@
-class onlyMethods {
-	void hello (  ) 
-	{  
-	};
- 
-}

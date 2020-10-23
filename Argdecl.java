@@ -1,13 +1,11 @@
 public class Argdecl implements Token
 {
-  Type type;
-  String id;
+  Fieldandmethod fieldandmethod;
   int state;
 
-  public Argdecl(Type inputType, String inputId, int inputState)
+  public Argdecl(Fieldandmethod input, int inputState)
   {
-    type = inputType;
-    id = inputId;
+    fieldandmethod = input;
     state = inputState;
   }
 
@@ -16,9 +14,9 @@ public class Argdecl implements Token
   public String toString(int t)
   {
     if(state == 0)
-      return type.toString(t) + " " + id;
+      return fieldandmethod.toString(t);
     else
-      return type.toString(t) + " " + id + "[]";
+      return fieldandmethod.toString(t) + "[]";
   }
 
 

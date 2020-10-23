@@ -1,1 +1,8 @@
-instead expected token classes are [SEMICOLON]
+class onlyMethods {
+	int x (  ) 
+	{ 
+print ( x );
+ 
+	}
+ 
+}
